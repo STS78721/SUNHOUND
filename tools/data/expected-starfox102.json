@@ -1,0 +1,19 @@
+{
+  "_comment": "Star Fox (1.0.2) ExeFS. Hashes only; no game data.",
+  "short_name": "starfox",
+  "display_name": "Star Fox",
+  "port_version": "0.1.0",
+  "title_id": "0400E88025B1A000",
+  "display_version": "1.0.2",
+  "wraps": ["f_700b6ac800"],
+  "exefs_sha256": {
+    "main": "37466c29a0ce6261656b98670e6977fd7a6cfffe3ba4b411022313d694802716",
+    "main.npdm": "61a153205c0089887ddb2d7deb28bb94591674104d0c1174433dd966ac568332",
+    "rtld": "87c39fd59d4d6a763b63ec39e1fab3662f084e49e0b12aad235ff85b8a866772",
+    "sdk": "f306d21b0507dce55bd5c8c9a9fa48ffbf11f3cdc246c9fe78079895241546c9",
+    "subsdk0": "ab06fd16da9921d25a2196276ad523b510607625e257c03f7b5a4a7ca2b33c4c",
+    "subsdk1": "409ed2912dda8737a3dd9753c2d34c16544dff7c863b36e2647b66f5eb337f49",
+    "subsdk2": "517e7eb922bbe312740b9e4af4eab01aeeec6d5b230b5fa9ef28fcd897ed18d8",
+    "subsdk3": "164f09d5abfc3a31df47e2665087aabbf704943286806d1a5b685de675a22cd8"
+  }
+}
