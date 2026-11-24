@@ -1,3 +1,10 @@
+## 0.1.1
+
+- Fixed `StarFoxLauncher.py` omitting `subsdk3` from `--modules` and `gen_ready` during client setup (all 6 static NSO modules `main`, `subsdk0`, `subsdk1`, `subsdk2`, `subsdk3`, and `sdk` are now lifted and linked).
+- Fixed isolated Python (`-I`) `sys.path` import in `tools/romfs_index.py`.
+- Updated ExeFS prompt/error text in `StarFoxLauncher.py` and `starfox_dump.py` to list all eight ExeFS files (`main` … `subsdk3`).
+- Added automated AST import-closure, Launcher-to-`expected-starfox102.json` module parity, and isolated `-B -I` smoke gates to `tools/build_starfox_release.py`.
+
 # Changelog
 
 All notable changes to **SteelTemple Star Fox** are documented here.

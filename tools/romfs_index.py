@@ -25,6 +25,10 @@ import sys
 import time
 from pathlib import Path
 
+_TOOLS_DIR = str(Path(__file__).resolve().parent)
+if _TOOLS_DIR not in sys.path:
+    sys.path.insert(0, _TOOLS_DIR)
+
 from check_content import GENERATED_MARKER
 
 MAGIC = b'TOTKRFS1'

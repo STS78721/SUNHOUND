@@ -502,7 +502,7 @@ def discover_dump(root: Path, work_dir: Path) -> DumpResolve:
         if still:
             raise DumpError(
                 f"ExeFS is missing {', '.join(still)} under {chosen_exefs}. "
-                "Star Fox 1.0.2 needs main, main.npdm, rtld, sdk, subsdk0, subsdk1 and subsdk2. "
+                "Star Fox 1.0.2 needs main, main.npdm, rtld, sdk, subsdk0, subsdk1, subsdk2 and subsdk3. "
                 "If your .nup includes a base package, use Browse .NUP… (base+update overlay). "
                 "Update-only dumps work when the update ExeFS already contains every module — "
                 "a separate base dump folder is not required."
@@ -536,7 +536,7 @@ def discover_dump(root: Path, work_dir: Path) -> DumpResolve:
         if miss:
             raise DumpError(
                 f"ExeFS at {chosen_exefs} is missing {', '.join(miss)}. "
-                "Star Fox 1.0.2 needs main, main.npdm, rtld, sdk, subsdk0, subsdk1 and subsdk2."
+                "Star Fox 1.0.2 needs main, main.npdm, rtld, sdk, subsdk0, subsdk1, subsdk2 and subsdk3."
             )
 
     assert chosen_exefs is not None and chosen_romfs is not None
@@ -965,7 +965,7 @@ def extract_nup_overlay(
     if missing:
         raise DumpError(
             f"NUP extract under {exefs} is missing {', '.join(missing)}. "
-            "Star Fox 1.0.2 needs main, main.npdm, rtld, sdk, subsdk0, subsdk1 and subsdk2. "
+            "Star Fox 1.0.2 needs main, main.npdm, rtld, sdk, subsdk0, subsdk1, subsdk2 and subsdk3. "
             "Browse .NUP… overlays a matching-title base (…000) onto the update (…800) when "
             "both are in the same container or sibling .nup files in the same folder; a standalone "
             "update-only .nup must include every module."
@@ -1066,7 +1066,7 @@ def verify_exefs_hashes(
     if missing:
         raise DumpError(
             f"Missing ExeFS file(s) under {exefs}: {', '.join(missing)}. "
-            "Star Fox 1.0.2 needs main, main.npdm, rtld, sdk, subsdk0, subsdk1 and subsdk2. "
+            "Star Fox 1.0.2 needs main, main.npdm, rtld, sdk, subsdk0, subsdk1, subsdk2 and subsdk3. "
             "Update/NUP-only dumps are fine when those modules are present; if a base package "
             "exists in the same .nup, Browse .NUP… overlays it automatically. "
             "A separate base dump folder is not required."

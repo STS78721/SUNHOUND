@@ -394,6 +394,69 @@ def verify_clean_stage(stage: Path) -> None:
         sys.exit("Release stage validation FAILED:\n" + "\n".join(bad[:50]))
     print(f"verify_clean_stage: {file_count} files passed check_content + allowlist rules (zero dev INI/game files).")
 
+    # 1. Automated AST transitive local-import closure check across staged recomp/ and tools/
+    import ast
+    import json
+    import re as _re
+
+    repo_tools = {p.stem for p in (ROOT / "tools").glob("*.py")}
+    repo_recomp = {p.stem for p in (ROOT / "recomp").glob("*.py")}
+    staged_tools = {p.stem for p in (stage / "tools").glob("*.py")}
+    staged_recomp = {p.stem for p in (stage / "recomp").glob("*.py")}
+    missing_imports: list[str] = []
+    for folder in (stage / "recomp", stage / "tools"):
+        for pyf in sorted(folder.glob("*.py")):
+            tree = ast.parse(pyf.read_text(encoding="utf-8", errors="ignore"))
+            for node in ast.walk(tree):
+                mods = []
+                if isinstance(node, ast.Import):
+                    mods = [a.name.split(".")[0] for a in node.names]
+                elif isinstance(node, ast.ImportFrom) and node.module:
+                    mods = [node.module.split(".")[0]]
+                for m in mods:
+                    if m in repo_tools and m not in staged_tools:
+                        missing_imports.append(f"{pyf.relative_to(stage)} imports tools/{m}.py (missing from stage)")
+                    if m in repo_recomp and m not in staged_recomp:
+                        missing_imports.append(f"{pyf.relative_to(stage)} imports recomp/{m}.py (missing from stage)")
+    if missing_imports:
+        sys.exit("Staged AST import-closure check FAILED:\n" + "\n".join(sorted(set(missing_imports))))
+
+    # 2. Launcher-to-expected-<title>.json static NSO module parity check
+    exp_json = json.loads((stage / "tools" / "data" / "expected-starfox102.json").read_text(encoding="utf-8"))
+    expected_nsos = sorted(k for k in exp_json.get("exefs_sha256", {}) if k not in {"rtld", "main.npdm"})
+    launcher_src = (ROOT / "launcher" / "StarFoxLauncher.py").read_text(encoding="utf-8", errors="ignore")
+    m_mod = _re.search(r'"--modules"\s*,\s*"([^"]+)"', launcher_src)
+    launcher_nsos = sorted(x.strip() for x in (m_mod.group(1).split(",") if m_mod else []) if x.strip())
+    if launcher_nsos != expected_nsos:
+        sys.exit(
+            f"Launcher --modules parity check FAILED: Launcher has {launcher_nsos}, "
+            f"but expected-starfox102.json requires {expected_nsos}"
+        )
+
+    # 3. Isolated staged-Python (-B -I) smoke test on every staged entry script
+    py_exe = stage / "python" / "python.exe"
+    smoke_scripts = (
+        stage / "recomp" / "gen.py",
+        stage / "tools" / "build_game.py",
+        stage / "tools" / "extract_nup.py",
+        stage / "tools" / "pack_romfs.py",
+        stage / "tools" / "romfs_index.py",
+    )
+    for sc in smoke_scripts:
+        r = subprocess.run(
+            [str(py_exe), "-B", "-I", str(sc), "--help"],
+            cwd=stage,
+            env=clean_env(stage / "python"),
+            capture_output=True,
+            text=True,
+        )
+        if r.returncode != 0:
+            sys.exit(f"Staged script smoke test FAILED for {sc.relative_to(stage)}:\n{r.stderr}\n{r.stdout}")
+    print(
+        f"verify_clean_stage: AST import closure OK, module parity OK ({expected_nsos}), "
+        f"and {len(smoke_scripts)} staged scripts passed isolated -B -I smoke test."
+    )
+
 
 def compile_setup_stub(work: Path, ver: str) -> Path:
     sdl_static = MKW_CACHE / "win" / "sdl-static"

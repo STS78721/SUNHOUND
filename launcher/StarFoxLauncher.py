@@ -43,7 +43,7 @@ from starfox_dump import (
 
 APP_TITLE = "SteelTemple Star Fox"
 APP_SUBTITLE = "Star Fox  ·  Native Windows PC Recompilation"
-DEFAULT_VERSION = "0.1.0"
+DEFAULT_VERSION = "0.1.1"
 GITHUB_URL = "https://github.com/STS78721/SUNHOUND"
 RELEASES_URL = GITHUB_URL + "/releases"
 RELEASES_API_URL = "https://api.github.com/repos/STS78721/SUNHOUND/releases/latest"
@@ -1303,7 +1303,7 @@ class StarFoxLauncherApp(tk.Tk):
         self.folder_btn.pack(side=tk.RIGHT, padx=(4, 0))
         self.nup_btn = self._plain_btn(dump_row, ".NUP...", self._pick_nup_file, width=8)
         self.nup_btn.pack(side=tk.RIGHT)
-        self.exefs_browse_btn = self._path_picker(card, "ExeFS Folder (all seven files, main … subsdk2):", self.exefs_var, self._pick_exefs)
+        self.exefs_browse_btn = self._path_picker(card, "ExeFS Folder (all eight files, main … subsdk3):", self.exefs_var, self._pick_exefs)
         self.romfs_browse_btn = self._path_picker(card, "RomFS Folder (raw dump or romfs_packed):", self.romfs_var, self._pick_romfs)
 
         opt_row = tk.Frame(card, bg=C_PANEL)
@@ -1960,7 +1960,7 @@ class StarFoxLauncherApp(tk.Tk):
                 and (gen_dir / "patches.h").is_file()
                 and all(
                     (gen_dir / m / "manifest.json").is_file() and (gen_dir / m / f"{m}_table.c").is_file()
-                    for m in ("main", "subsdk0", "subsdk1", "subsdk2", "sdk")
+                    for m in ("main", "subsdk0", "subsdk1", "subsdk2", "subsdk3", "sdk")
                 )
             )
             if gen_ready:
@@ -1972,7 +1972,7 @@ class StarFoxLauncherApp(tk.Tk):
                 patches = self.root_dir / "recomp" / "patches-starfox102.txt"
                 self._run_step(
                     [str(py), str(gen_script), "--exefs", str(exefs), "--out", str(gen_dir), "--patches", str(patches),
-                     "--modules", "main,subsdk0,subsdk1,subsdk2,sdk"],   # Star Fox links subsdk1 too (gen.py lifts 3 by default)
+                     "--modules", "main,subsdk0,subsdk1,subsdk2,subsdk3,sdk"],   # Star Fox 1.0.2 links all 6 static NSO modules
                     env,
                     56,
                     68,
